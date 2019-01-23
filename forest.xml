@@ -1,0 +1,15 @@
+<rules max_depth="50">
+        <rule name="entry">
+            <call count="36" 
+                 rule="base"/>
+        </rule>
+        <rule name="base">
+            <call rx="random.random() * {start_angle}*2 - {start_angle}"
+                  ry="random.random() * {start_angle}*2 - {start_angle}"
+                  sa="random.random() + 0.1" rule="grow"/>
+        </rule>
+        <rule name="grow" weight="95">
+            <call transforms="tz 1.5 sa 0.9" rule="grow"/>
+            <instance shape="box"/>
+        </rule>
+</rules>
