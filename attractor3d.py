@@ -12,7 +12,7 @@ import random
 import math
 from sklearn.neighbors import NearestNeighbors
 
-def translate_by_distance(vertex, attractors, vertex_id):
+def prune_by_distance(vertex, attractors, vertex_id, threshold):
     translated_vertex = np.array(list(vertex))
 
     a_attractors = np.zeros(shape=(len(attractors), len(attractors[0])))
@@ -21,33 +21,29 @@ def translate_by_distance(vertex, attractors, vertex_id):
         # we only use the XY position of each attractor
         a_attractors[ri][0] = attractors[ri][0]
         a_attractors[ri][1] = attractors[ri][1]
+        a_attractors[ri][2] = attractors[ri][2]
 
     nn = NearestNeighbors(n_neighbors=2, algorithm='ball_tree').fit(a_attractors)
     distances, indices = nn.kneighbors(np.array([translated_vertex]))
     dist_magnitude = np.linalg.norm(distances)
 
-    translated_vertex[2] = translated_vertex[2] - min(5, math.pow(dist_magnitude,4))
+    return dist_magnitude > threshold
 
-    return tuple(list(translated_vertex))
-
-def sv_main(source_vertices=[[]], source_edges=[[]], source_faces=[[]], attractors=[[]]):
+def sv_main(source_vertices=[[]], attractors=[[]], threshold=5):
     in_sockets = [
         ['v', 'source vertices', source_vertices],
-        ['s', 'source edges', source_edges],
-        ['s', 'source faces', source_faces],
-        ['v', 'attractor centres', attractors]]
+        ['v', 'attractor centres', attractors],
+        ['s', 'distance threshold', threshold]]
 
     vertices = []
     edges = []
     faces = []
 
     # translate source vertices using the attractors
-    vertices = [ translate_by_distance(v, attractors[0], vi) for vi, v in enumerate(source_vertices[0]) ]
+    vertices = [ v for vi, v in enumerate(source_vertices[0]) if prune_by_distance(v, attractors[0], vi, threshold) ]
 
     out_sockets = [
         ['v', 'vertices', [vertices]],
-        ['s', 'edges', [source_edges[0]]],
-        ['s', 'faces', [source_faces[0]]],
         ['s', 'Debug', []]
     ]
 

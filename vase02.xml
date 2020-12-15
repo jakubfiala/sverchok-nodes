@@ -1,0 +1,9 @@
+<rules max_depth="{iterations}">
+        <rule name="entry">
+            <call rule="grow"/>
+        </rule>
+        <rule name="grow">
+            <call tz="{grow_rate}" rz="{rotation_angle}" sa="{scaling}" rule="grow"/>
+            <instance shape="box"/>
+        </rule>
+</rules>

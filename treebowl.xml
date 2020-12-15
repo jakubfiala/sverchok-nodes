@@ -1,0 +1,9 @@
+<rules max_depth="10000">
+    <constants cur_angle="{init_bend}"/>
+    <rule name="entry">
+        <call count="{branch_count}" rule="base" tx="math.sin({init_bend})" ty="math.cos({init_bend})"/>
+    </rule>
+    <rule name="base">
+        <instance shape="box"/>
+    </rule>
+</rules>
