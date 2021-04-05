@@ -1,5 +1,14 @@
-"""Random Wave function
 """
+in source_vertices  v  
+in num_waves        s  d=16 n=2
+in period           s  d=1  n=2
+in seed             s  d=0  n=2
+out displaced       v
+out bug             s
+"""
+
+# Random Wave function
+
 import numpy as np
 import random
 import math
@@ -12,21 +21,9 @@ def displace_vertex_with_waves(vertex, t, waves):
 
     return tuple(list(translated_vertex))
 
-def sv_main(source_vertices=[[]], num_waves=16, period=1, seed=0):
-    in_sockets = [
-        ['v', 'source vertices', source_vertices],
-        ['s', 'number of waves', num_waves],
-        ['s', 'period', period],
-        ['s', 'seed', seed]]
 
+if source_vertices:
     random.seed(seed)
-
     waves = [ (random.random(), random.random(), random.random()) for w in range(num_waves) ]
-    displaced = [ displace_vertex_with_waves(vertex, t * period, waves) for t, vertex in enumerate(source_vertices[0]) ]
+    displaced = [[ displace_vertex_with_waves(vertex, t * period, waves) for t, vertex in enumerate(source_vertices[0]) ]]
 
-    out_sockets = [
-        ['v', 'Displaced vertices', [displaced]],
-        ['s', 'Debug', []]
-    ]
-
-    return in_sockets, out_sockets
